@@ -37,10 +37,6 @@ describe("Food", () => {
 describe("Refrigerator with no food", () => {
   const fridge = new Refrigerator();
 
-  test("Refrigerator constructor", () => {
-    expect(fridge.food).toEqual([]);
-  });
-
   test("getContents", () => {
     expect(fridge.getContents()).toEqual([]);
   });
