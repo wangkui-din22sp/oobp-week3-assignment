@@ -1,45 +1,108 @@
-/*
-  ALL TASKS MUST BE IMPLEMENTED WITH TYPESCRIPT!
-  Use interfaces and data types in all cases to explicitly specify the types
-  for variables, function parameters, function return values and object structures. 
-*/
 
-/*
-Task 1 - Food class
-Create a class called Food. The class should have the following properties:
-- name (string)
-- calories (number)
-The class should have the following methods:
-- getName(): string, returns the name of the food
-- getFoodInfo(): string, returns a string in the following format: "<name> has <calories> calories"
-*/
-/* Write your Task 1 solution here */
+export class Soldier {
+  hp: number;
+  attackStrength: number;
+  hitPercentage: number;
+  isAlive: boolean;
 
+  constructor(hp: number, attackStrength: number, hitPercentage: number) {
+    this.hp = hp;
+    this.attackStrength = attackStrength;
+    this.hitPercentage = Math.max(0, Math.min(100, hitPercentage)); // Clamp between 0 and 100
+    this.isAlive = true;
+  }
 
+  takeDamage(damage: number): void {
+    this.hp = Math.max(0, this.hp - damage);
+    if (this.hp === 0) {
+      this.isAlive = false;
+    }
+  }
 
-/* Task 2 - Create a class Refrigerator. The purpose of the class is to store Food objects. 
-  The Refrigerator should be able to store an unlimited amount of Food objects.
-  The Refrigerator should offer capabilities to add Food objects to the refrigerator,
-  get the contents of the refrigerator and eat a Food object from the refrigerator.
-  The Refrigerator should also offer method to calculate the total calories of all the Food objects in the refrigerator.
+  attack(target: Soldier): void {
+    if (!this.isAlive) return;
+    const hitChance = Math.random() * 100;
+    if (hitChance <= this.hitPercentage) {
+      target.takeDamage(this.attackStrength);
+    }
+  }
+}
 
-  The class should have the following methods:
-  - addFood(food: Food): void, adds a Food object to the refrigerator
-  - getContents(): string[], returns an array of strings containing the names of the Food objects in the refrigerator
-  - eatFood(foodName: string): string, finds Food object with foodName from the refrigerator, removes a Food object from the refrigerator and
-                         returns a string in the following format: "You ate <name> with <calories> calories". If 
-                         the Food object is not in the refrigerator, return a string in the following format:
-                         "There is no <name> in the refrigerator".
-  - getTotalCalories(): number, returns the total calories of all the Food objects in the refrigerator
-  - getNumberOfFoodItems(): number, returns the number of Food objects in the refrigerator
-  
+// army.ts
+export class Army {
+  name: string;
+  soldiers: Soldier[];
 
-  Note you can use an array method splice to remove an element from an array.
-  You can read more about the splice method here: 
-  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-*/
-/* Write your Task 2 solution here */
+  constructor(name: string, soldiers: Soldier[]) {
+    this.name = name;
+    this.soldiers = soldiers.filter(soldier => soldier.isAlive);
+  }
 
+  addSoldier(soldier: Soldier): void {
+    if (soldier.isAlive) {
+      this.soldiers.push(soldier);
+    }
+  }
 
+  getStatus(): { soldierCount: number; totalHP: number } {
+    const aliveSoldiers = this.soldiers.filter(soldier => soldier.isAlive);
+    const totalHP = aliveSoldiers.reduce((sum, soldier) => sum + soldier.hp, 0);
+    return {
+      soldierCount: aliveSoldiers.length,
+      totalHP,
+    };
+  }
 
-export { Food, Refrigerator };
+  getCombinedAttackStrength(): number {
+    return this.soldiers
+      .filter(soldier => soldier.isAlive)
+      .reduce((sum, soldier) => sum + soldier.attackStrength, 0);
+  }
+
+  attackEnemy(enemyArmy: Army): void {
+    const aliveSoldiers = this.soldiers.filter(soldier => soldier.isAlive);
+    const enemyAliveSoldiers = enemyArmy.soldiers.filter(soldier => soldier.isAlive);
+
+    if (aliveSoldiers.length === 0 || enemyAliveSoldiers.length === 0) return;
+
+    // Each soldier attacks a random enemy soldier
+    for (const soldier of aliveSoldiers) {
+      if (enemyAliveSoldiers.length === 0) break;
+      const randomIndex = Math.floor(Math.random() * enemyAliveSoldiers.length);
+      const target = enemyAliveSoldiers[randomIndex];
+      soldier.attack(target);
+      // Update enemy alive soldiers after attack
+      enemyArmy.soldiers = enemyArmy.soldiers.filter(s => s.isAlive);
+      enemyAliveSoldiers.splice(randomIndex, 1, target); // Update the target in the temp array
+    }
+  }
+
+  isDefeated(): boolean {
+    return this.soldiers.every(soldier => !soldier.isAlive);
+  }
+}
+
+// battle.ts
+export function fightArmies(armyA: Army, armyB: Army): string {
+  let round = 1;
+  while (!armyA.isDefeated() && !armyB.isDefeated()) {
+    console.log(`Round ${round}:`);
+    console.log(`${armyA.name} Status: ${JSON.stringify(armyA.getStatus())}`);
+    console.log(`${armyB.name} Status: ${JSON.stringify(armyB.getStatus())}`);
+
+    // Army A attacks Army B
+    armyA.attackEnemy(armyB);
+    if (armyB.isDefeated()) {
+      return `${armyA.name} wins!`;
+    }
+
+    // Army B attacks Army A
+    armyB.attackEnemy(armyA);
+    if (armyA.isDefeated()) {
+      return `${armyB.name} wins!`;
+    }
+
+    round++;
+  }
+  return armyA.isDefeated() ? `${armyB.name} wins!` : `${armyA.name} wins!`;
+}
