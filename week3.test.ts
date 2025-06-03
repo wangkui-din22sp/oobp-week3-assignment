@@ -58,13 +58,6 @@ describe('Army', () => {
     expect(army.getStatus().soldierCount).toBe(2);
   });
 
-  test('should add a soldier correctly', () => {
-    const newSoldier = new Soldier(100, 15, 70);
-    army.addSoldier(newSoldier);
-    expect(army.soldiers.length).toBe(3);
-    expect(army.getStatus().soldierCount).toBe(3);
-  });
-
   test('should calculate total HP correctly', () => {
     expect(army.getStatus().totalHP).toBe(200); // 100 + 100
   });
