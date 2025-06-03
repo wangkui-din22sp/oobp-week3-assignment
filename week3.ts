@@ -1,3 +1,49 @@
+/*
+  ALL TASKS MUST BE IMPLEMENTED WITH TYPESCRIPT!
+  Use interfaces and data types in all cases to explicitly specify the types
+  for variables, function parameters, function return values and object structures. 
+*/
+
+/*
+Task 1 - Food class
+Create a class called Food. The class should have the following properties:
+- name (string)
+- calories (number)
+The class should have the following methods:
+- getName(): string, returns the name of the food
+- getFoodInfo(): string, returns a string in the following format: "<name> has <calories> calories"
+*/
+/* Write your Task 1 solution here */
+
+
+
+/* Task 2 - Create a class Refrigerator. The purpose of the class is to store Food objects. 
+  The Refrigerator should be able to store an unlimited amount of Food objects.
+  The Refrigerator should offer capabilities to add Food objects to the refrigerator,
+  get the contents of the refrigerator and eat a Food object from the refrigerator.
+  The Refrigerator should also offer method to calculate the total calories of all the Food objects in the refrigerator.
+
+  The class should have the following methods:
+  - addFood(food: Food): void, adds a Food object to the refrigerator
+  - getContents(): string[], returns an array of strings containing the names of the Food objects in the refrigerator
+  - eatFood(foodName: string): string, finds Food object with foodName from the refrigerator, removes a Food object from the refrigerator and
+                         returns a string in the following format: "You ate <name> with <calories> calories". If 
+                         the Food object is not in the refrigerator, return a string in the following format:
+                         "There is no <name> in the refrigerator".
+  - getTotalCalories(): number, returns the total calories of all the Food objects in the refrigerator
+  - getNumberOfFoodItems(): number, returns the number of Food objects in the refrigerator
+  
+
+  Note you can use an array method splice to remove an element from an array.
+  You can read more about the splice method here: 
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+*/
+/* Write your Task 2 solution here */
+
+export { Food, Refrigerator };
+
+
+
 //task 3:
 // Implement a simple battle simulation between two armies using TypeScript.
 //Tips: The simulation should include classes for Soldier and Army, with methods for attacking and checking the status of the armies.
@@ -23,10 +69,9 @@ export class Soldier {
   }
 
   takeDamage(damage: number): void {
-    this.hp = Math.max(0, this.hp - damage);
-    if (this.hp === 0) {
-      this.isAlive = false;
-    }
+
+    //Write your solution here
+
   }
 
   // Step 2: 
@@ -35,12 +80,9 @@ export class Soldier {
   // The attack method should check if the soldier is alive before attacking. If the soldier is dead, the attack should not happen.  
   // If the attack happens, the method target.takeDamage should be called. The target soldier takes the damage which is equal to the attacking soldier's attack strength.
   attack(target: Soldier): void {
-    if (!this.isAlive) return;
-    this.hitChance = Math.random() * 100;
-    if (this.hitChance <= this.hitPercentage) {
-      target.takeDamage(this.attackStrength);
-    }
-  }
+
+  //Write your solution here
+
 }
 
 export class Army {
@@ -58,21 +100,17 @@ export class Army {
   // soldierCount is the number of alive soldiers in the army
   // totalHP is the sum of HP of all alive soldiers in the army
   getStatus(): { soldierCount: number; totalHP: number } {
-    const aliveSoldiers = this.soldiers.filter(soldier => soldier.isAlive);
-    const totalHP = aliveSoldiers.reduce((sum, soldier) => sum + soldier.hp, 0);
-    return {
-      soldierCount: aliveSoldiers.length,
-      totalHP,
-    };
+    
+    //Write your solution here
+
   }
 
   // Step 4:
   // Get the combined attack strength of all alive soldiers in the army
   // The method should return the sum of attack strengths of all alive soldiers
   getCombinedAttackStrength(): number {
-    return this.soldiers
-      .filter(soldier => soldier.isAlive)
-      .reduce((sum, soldier) => sum + soldier.attackStrength, 0);
+
+    //Write your solution here
   }
 
   // Step 5:
@@ -81,29 +119,18 @@ export class Army {
   // If the enemy soldier is killed, it should be removed from the enemy army's soldiers array.
   // The method should not return anything.
 attackEnemy(enemyArmy: Army): void {
-  const aliveSoldiers = this.soldiers.filter(soldier => soldier.isAlive);
-  let enemyAliveSoldiers = enemyArmy.soldiers.filter(soldier => soldier.isAlive);
+  
+  //Write your solution here
 
-  if (aliveSoldiers.length === 0 || enemyAliveSoldiers.length === 0) return;
-
-  // Each soldier attacks a random enemy soldier
-  for (const soldier of aliveSoldiers) {
-    if (enemyAliveSoldiers.length === 0) break;
-    const randomIndex = Math.floor(Math.random() * enemyAliveSoldiers.length);
-    const target = enemyAliveSoldiers[randomIndex];
-    soldier.attack(target);
-    
-    // After the attack, remove the dead soldier from the enemy army
-    enemyArmy.soldiers = enemyArmy.soldiers.filter(s => s.isAlive);
-    // Update the filtered array of enemyAliveSoldiers to reflect the change in enemyArmy.soldiers
-    enemyAliveSoldiers = enemyArmy.soldiers.filter(s => s.isAlive);
-  }
 }
 
 
-
+// Step 6:
+// Check if the army is defeated, meaning all soldiers are dead
   isDefeated(): boolean {
-    return this.soldiers.every(soldier => !soldier.isAlive);
+
+    //Write your solution here
+
   }
 }
 
