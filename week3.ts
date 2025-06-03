@@ -82,6 +82,8 @@ export class Soldier {
   attack(target: Soldier): void {
 
   //Write your solution here
+  
+  }
 
 }
 
